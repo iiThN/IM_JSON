@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Insert Employee Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 2px solid black;
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    td input {
+      width: 100%;
+      padding: 5px;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 8px 20px;
+      font-size: 14px;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    #display-section {
+      margin-top: 30px;
+      display: none;
+    }
+
+    hr {
+      margin: 30px 0;
+    }
+
+    .success { color: green; }
+    .error   { color: red;   }
+  </style>
+</head>
+<body>
+
+  <table>
+    <thead>
+      <tr>
+        <th>City</th>
+        <th>Department</th>
+        <th>Employee ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Hire Date</th>
+        <th>Job Title</th>
+        <th>Salary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text"   id="city"      placeholder="e.g. Cebu"></td>
+        <td><input type="text"   id="dept"      placeholder="e.g. IT"></td>
+        <td><input type="number" id="emp_id"    placeholder="101"></td>
+        <td><input type="text"   id="firstname" placeholder="John"></td>
+        <td><input type="text"   id="lastname"  placeholder="Doe"></td>
+        <td><input type="date"   id="hire_date"></td>
+        <td><input type="text"   id="job_title" placeholder="Programmer"></td>
+        <td><input type="number" id="salary"    placeholder="25000"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="insertData()">Insert</button>
+  <button onclick="loadRecords()">Refresh Records</button>
+
+  <div id="status"></div>
+
+  <hr>
+
+  <div id="display-section">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>City</th>
+          <th>Department</th>
+          <th>Employee ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Hire Date</th>
+          <th>Job Title</th>
+          <th>Salary</th>
+        </tr>
+      </thead>
+      <tbody id="display-body">
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Load existing records on page load
+    window.onload = function () {
+      loadRecords();
+    };
+
+    function setStatus(message, isSuccess) {
+      var el = document.getElementById("status");
+      el.textContent = message;
+      el.className = isSuccess ? "success" : "error";
+    }
+
+    function insertData() {
+      var city      = document.getElementById("city").value.trim();
+      var dept      = document.getElementById("dept").value.trim();
+      var emp_id    = document.getElementById("emp_id").value.trim();
+      var firstname = document.getElementById("firstname").value.trim();
+      var lastname  = document.getElementById("lastname").value.trim();
+      var hire_date = document.getElementById("hire_date").value;
+      var job_title = document.getElementById("job_title").value.trim();
+      var salary    = document.getElementById("salary").value.trim();
+
+      if (!city || !dept || !emp_id || !firstname || !lastname || !hire_date || !job_title || !salary) {
+        setStatus("Please fill in all fields before inserting.", false);
+        return;
+      }
+
+      var payload = {
+        city_name:       city,
+        department_name: dept,
+        id:              emp_id,
+        first_name:      firstname,
+        last_name:       lastname,
+        hire_date:       hire_date,
+        job_title:       job_title,
+        salary:          salary
+      };
+
+      setStatus("Saving...", true);
+
+      fetch("process.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res.success) {
+          setStatus("Record inserted successfully!", true);
+          clearFields();
+          loadRecords(); // Refresh the table after insert
+        } else {
+          setStatus("Error: " + res.message, false);
+        }
+      })
+      .catch(function (err) {
+        setStatus("Request failed: " + err.message, false);
+      });
+    }
+
+    function loadRecords() {
+      fetch("fetch.php")
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.success) {
+            renderTable(res.data);
+          } else {
+            setStatus("Error loading records: " + res.message, false);
+          }
+        })
+        .catch(function (err) {
+          setStatus("Failed to load records: " + err.message, false);
+        });
+    }
+
+    function renderTable(data) {
+      var tbody = document.getElementById("display-body");
+      tbody.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        document.getElementById("display-section").style.display = "none";
+        return;
+      }
+
+      data.forEach(function (record, index) {
+        // employee_details may be a JSON string or already an object
+        var emp = record.employee_details;
+        if (typeof emp === "string") {
+          emp = JSON.parse(emp);
+        }
+
+        var row = "<tr>" +
+          "<td>" + (index + 1) + "</td>" +
+          "<td>" + (record.city_name || "") + "</td>" +
+          "<td>" + (record.department_name || "") + "</td>" +
+          "<td>" + (emp.id || "") + "</td>" +
+          "<td>" + (emp.first_name || "") + "</td>" +
+          "<td>" + (emp.last_name || "") + "</td>" +
+          "<td>" + (emp.hire_date || "") + "</td>" +
+          "<td>" + (emp.job_title || "") + "</td>" +
+          "<td>" + Number(emp.salary).toLocaleString() + "</td>" +
+        "</tr>";
+
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("display-section").style.display = "block";
+    }
+
+    function clearFields() {
+      ["city", "dept", "emp_id", "firstname", "lastname", "hire_date", "job_title", "salary"]
+        .forEach(function (id) {
+          document.getElementById(id).value = "";
+        });
+    }
+  </script>
+
+</body>
+</html>

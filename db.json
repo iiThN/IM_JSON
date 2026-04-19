@@ -1,0 +1,45 @@
+{
+  "department_name": "Information Technology",
+  "employees": [
+    {
+      "id": 101,
+      "first_name": "John",
+      "last_name": "Smith",
+      "hire_date": "2019-03-15",
+      "job_title": "Software Engineer",
+      "salary": 75000
+    },
+    {
+      "id": 102,
+      "first_name": "Maria",
+      "last_name": "Garcia",
+      "hire_date": "2020-07-01",
+      "job_title": "Database Administrator",
+      "salary": 68000
+    },
+    {
+      "id": 103,
+      "first_name": "James",
+      "last_name": "Lee",
+      "hire_date": "2021-01-10",
+      "job_title": "Web Developer",
+      "salary": 62000
+    },
+    {
+      "id": 104,
+      "first_name": "Anna",
+      "last_name": "Brown",
+      "hire_date": "2018-11-22",
+      "job_title": "Systems Analyst",
+      "salary": 71000
+    },
+    {
+      "id": 105,
+      "first_name": "Carlos",
+      "last_name": "Reyes",
+      "hire_date": "2022-05-30",
+      "job_title": "IT Support Specialist",
+      "salary": 45000
+    }
+  ]
+}
