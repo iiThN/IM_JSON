@@ -1,6 +1,8 @@
 <?php
 
-define('SUPABASE_URL', 'https://ftqltvkpiarwibahaocb.supabase.co');
-define('SUPABASE_ANON_KEY', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0cWx0dmtwaWFyd2liYWhhb2NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTA3NzYsImV4cCI6MjA5MjA4Njc3Nn0.dha_XHfGCD0TFLHJttP_RPb3aa-6XHixIxYO0OOz6nk');
-define('TABLE_NAME', 'city_department_employees');
+$env = parse_ini_file('.env');
+
+define('SUPABASE_URL',      $env['SUPABASE_URL']);
+define('SUPABASE_ANON_KEY', $env['SUPABASE_ANON_KEY']);
+define('TABLE_NAME',        $env['TABLE_NAME']);
 ?>

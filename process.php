@@ -21,7 +21,7 @@ foreach ($requiredFields as $field) {
   }
 }
 
-// Create employee details JSON object
+// pagcreate sa employee details nga JSON object
 $employeeDetails = [
   "id" => (int)$data['id'],
   "first_name" => $data['first_name'],

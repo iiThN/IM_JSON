@@ -110,7 +110,7 @@
   </div>
 
   <script>
-    // Load existing records on page load
+
     window.onload = function () {
       loadRecords();
     };
@@ -159,7 +159,7 @@
         if (res.success) {
           setStatus("Record inserted successfully!", true);
           clearFields();
-          loadRecords(); // Refresh the table after insert
+          loadRecords(); // para magauto refresh after maginsert
         } else {
           setStatus("Error: " + res.message, false);
         }
@@ -194,7 +194,7 @@
       }
 
       data.forEach(function (record, index) {
-        // employee_details may be a JSON string or already an object
+        
         var emp = record.employee_details;
         if (typeof emp === "string") {
           emp = JSON.parse(emp);

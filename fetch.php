@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 
 require 'config.php';
 
-// Make API call to Supabase to fetch all records
+// API call to supabase para mafetch ang data
 $url = SUPABASE_URL . '/rest/v1/' . TABLE_NAME . '?order=created_at.desc';
 
 $ch = curl_init($url);
